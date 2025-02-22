@@ -1,11 +1,13 @@
-import { useState } from 'react'
 import EventDetails from './components/EventDetails'
+import { Toaster } from 'sonner'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <EventDetails />
+    <>
+      <Toaster />
+      <EventDetails />
+    </>
   )
 }
 
