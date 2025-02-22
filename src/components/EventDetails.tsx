@@ -47,7 +47,6 @@ function EventDetails() {
                                         <h1 className="text-[14px]">
                                             Joined on - {format(new Date(list.date), "dd MMM yyyy, hh:mm a")}
                                         </h1>
-                                        <Button onClick={() => cancelSlot(list.id)} className="!w-[35px] h-[31px]" content="x" type="button" />
                                     </li>
                                 ))
                             }
