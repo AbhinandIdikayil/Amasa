@@ -21,9 +21,7 @@ export const useEvent = () => {
     function reduceSlotCount() {
         setAvailableSlot((prev) => (prev - 1));
     }
-    function incSlotCount() {
-        setAvailableSlot(prev => prev + 1);
-    }
+
     function resetAll() {
         setAvailableSlot(slot)
         setBookingHistory([])
@@ -31,19 +29,16 @@ export const useEvent = () => {
         updateLocalStorage([], slot)
     }
     function bookNow(date: Date) {
-
         if (availableSlot as number > 0) {
             const newBooking = {
                 id: uniqid(),
                 date
             };
-
             setBookingHistory(prev => {
                 const updatedHistory = [...prev, newBooking];
                 updateLocalStorage(updatedHistory, availableSlot - 1);
                 return updatedHistory;
             });
-
             reduceSlotCount()
         } else {
             toast.error('No slots available! ',
@@ -77,9 +72,19 @@ export const useEvent = () => {
     function cancelSlot(id: string) {
         setBookingHistory(prev => {
             const updatedHistory = prev.filter(booking => booking.id !== id);
-            const updatedSlot = availableSlot + 1;
-            setAvailableSlot(updatedSlot);
-            updateLocalStorage(updatedHistory, updatedSlot);
+            let updatedSlotCount = availableSlot + 1;
+            let updatedWaitingList = waitingList;
+
+            if (waitingList.length > 0 && updatedSlotCount < slot) {
+                const allocatedUser = waitingList[0];
+                updatedHistory.push({ ...allocatedUser, date: new Date() });
+                updatedWaitingList = waitingList.slice(1);
+                updatedSlotCount--;
+            }
+
+            setAvailableSlot(updatedSlotCount);
+            setWaitingList(updatedWaitingList)
+            updateLocalStorage(updatedHistory, updatedSlotCount);
             return updatedHistory;
         });
     }
