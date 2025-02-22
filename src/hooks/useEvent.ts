@@ -24,13 +24,13 @@ export const useEvent = () => {
 
     function resetAll() {
         const id = toast.message('Confirm to reset', {
-            cancel:{
+            cancel: {
                 label: "Cancel",
                 onClick: () => {
                     toast.dismiss(id)
                 },
             },
-            action:{
+            action: {
                 label: "Confirm",
                 onClick: () => {
                     setAvailableSlot(slot);
@@ -53,9 +53,13 @@ export const useEvent = () => {
                 return updatedHistory;
             });
             reduceSlotCount()
+            toast.success('Slot created successfully', {
+                richColors: true,
+            })
         } else {
-            toast.error('No slots available! ',
+            toast.warning('No slots available! ',
                 {
+                    richColors: true,
                     action: {
                         label: 'Join waiting list',
                         onClick: () => joinWaitingList(new Date())
