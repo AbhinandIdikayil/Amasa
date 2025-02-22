@@ -15,6 +15,7 @@ export const useEvent = () => {
     const [bookingHistory, setBookingHistory] = useState<BookingListType[]>([]);
     const [availableSlot, setAvailableSlot] = useState<number>(0);
 
+
     useEffect(() => {
         const storedEvent = localStorage.getItem("event");
         if (!storedEvent) {
