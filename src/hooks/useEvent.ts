@@ -23,10 +23,23 @@ export const useEvent = () => {
     }
 
     function resetAll() {
-        setAvailableSlot(slot)
-        setBookingHistory([])
-        setWaitingList([]);
-        updateLocalStorage([], slot)
+        const id = toast.message('Confirm to reset', {
+            cancel:{
+                label: "Cancel",
+                onClick: () => {
+                    toast.dismiss(id)
+                },
+            },
+            action:{
+                label: "Confirm",
+                onClick: () => {
+                    setAvailableSlot(slot);
+                    setBookingHistory([]);
+                    setWaitingList([]);
+                    updateLocalStorage([], slot, []);
+                },
+            },
+        })
     }
     function bookNow(date: Date) {
         if (availableSlot as number > 0) {
@@ -36,14 +49,13 @@ export const useEvent = () => {
             };
             setBookingHistory(prev => {
                 const updatedHistory = [...prev, newBooking];
-                updateLocalStorage(updatedHistory, availableSlot - 1);
+                updateLocalStorage(updatedHistory, availableSlot - 1, null);
                 return updatedHistory;
             });
             reduceSlotCount()
         } else {
             toast.error('No slots available! ',
                 {
-                    position: 'top-center',
                     action: {
                         label: 'Join waiting list',
                         onClick: () => joinWaitingList(new Date())
@@ -84,15 +96,15 @@ export const useEvent = () => {
 
             setAvailableSlot(updatedSlotCount);
             setWaitingList(updatedWaitingList)
-            updateLocalStorage(updatedHistory, updatedSlotCount);
+            updateLocalStorage(updatedHistory, updatedSlotCount, updatedWaitingList);
             return updatedHistory;
         });
     }
 
-    function updateLocalStorage(history: BookingListType[], slot: number) {
+    function updateLocalStorage(history: BookingListType[], slot: number, waiting: WaitingListType[] | null) {
         const updatedData = {
             AVAILABLE_SLOT: slot,
-            WAITING_LIST: waitingList,
+            WAITING_LIST: waiting || waitingList,
             BOOKING_HISTORY: history
         };
         localStorage.setItem("event", JSON.stringify(updatedData));
